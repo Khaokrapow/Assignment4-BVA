@@ -3,7 +3,6 @@ import datetime
 import os
 
 def plot_results(test_cases, results):
-    """Plot the results using matplotlib."""
     plt.bar(test_cases, results)
     plt.xlabel('Test Cases')
     plt.ylabel('Results')
@@ -23,23 +22,24 @@ def generate_test_case(x, y, test_type):
     elif test_type == 'Worse Case Robustness':
         return [x - 1, y + 1]
     else:
-        print("Invalid")
+        print("--Invalid--")
+        return [0, 0]  
 # write test case
 def write_test_case_to_file(file_name, test_case, expected_result):
     """Write the test case and expected result to a file."""
     now = datetime.datetime.now()
     file_name_with_datetime = f"{file_name}_{now.strftime('%Y%m%d_%H%M%S')}.txt"
-    
-    with open(file_name_with_datetime, 'w') as file:
+    file_path = os.path.join("TestCase", file_name_with_datetime)  # รวมเส้นทางไปยังโฟลเดอร์ "TestCase"
+
+    with open(file_path, 'w') as file:
         file.write(f"X,Y,Expected Result\n")
         file.write(f"Test Case: {test_case}\n")
         file.write(f"Expected Result: {expected_result}\n")
         file.write(f"Time: {now}\n")
 
-    print(f"Test case has been written to {file_name}")
+    print(f"Test case has been written to {file_path}")
 
 def get_user_input():
-    """Get user input for X, Y, test type, and file name."""
     x = int(input("Enter X (4 <= X <= 10): "))
     y = int(input("Enter Y (8 <= Y <= 12): "))
     test_type = input("Enter test type (BVA, Worse case, Robustness, Worse Case Robustness): ")
@@ -56,7 +56,8 @@ def main():
     write_test_case_to_file(file_name, test_case, expected_result)
 
     test_cases = ['BVA', 'Worse Case', 'Robustness', 'Worse Case Robustness']
-    results = [calculate_area(*generate_test_case(x, y, test_case)) for test_case in test_cases]
+    
+    results = [calculate_area(*generate_test_case(x, y, test_case))]
 
     plot_results(test_cases, results)
 
